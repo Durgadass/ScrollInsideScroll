@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.dass.scroll_inside_scroll.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/outer_scroll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/outer_textView1"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#ff0000ff"
+            android:gravity="center"
+            android:text="Inside Outer ScrollView" />
+
+        <com.dass.scroll_inside_scroll.CustomScrollView
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/inner_scroll_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/inner_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:background="#ff00ff00"
+                    android:gravity="center"
+                    android:text="Inside Inner ScrollView" />
+
+                <com.dass.scroll_inside_scroll.CustomExpandableListView
+                    android:id="@+id/expandableListView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp" >
+                </com.dass.scroll_inside_scroll.CustomExpandableListView>
+            </LinearLayout>
+        </com.dass.scroll_inside_scroll.CustomScrollView>
+
+        <TextView
+            android:id="@+id/outer_textView2"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#ffff0000"
+            android:gravity="center"
+            android:text="Inside Outer ScrollView" />
+
+        <com.dass.scroll_inside_scroll.CustomListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#ff555555" >
+        </com.dass.scroll_inside_scroll.CustomListView>
+    </LinearLayout>
+
+</com.dass.scroll_inside_scroll.CustomScrollView>
