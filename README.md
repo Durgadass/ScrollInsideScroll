@@ -8,7 +8,7 @@ Placing vertically scrollable view into another vertically scrollable view is a 
 <b>Note</b>
 Eventhough you can nest scroll views to any level, please consider the user experiance. This project contains a complicated xml layout file <code>scroll_in_scroll.xml</code> which has no good user experiance.
 
-<H5>Step 1</H5>
+<H4>Step 1</H4>
 Write a method which determines wheather a <code>View</code> can be scrolled vertically and place the method inside a common utility class as follows. This method is taken from <code>ViewPager.java</code> and modified to find whether a <code>View</code> can vertically scrollable.
 
 	public static boolean canScroll(View v, boolean checkV, int dy, int x, int y) {
