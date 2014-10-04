@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Scrollinsidescroll by Durgadass</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Scrollinsidescroll</h1>
+        <p>Contains a project which shows how to add ScrollView inside ScrollView, ScrollView inside ListView, ListView inside GridView, etc.</p>
+
+        <p class="view"><a href="https://github.com/Durgadass/ScrollInsideScroll">View the Project on GitHub <small>Durgadass/ScrollInsideScroll</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Durgadass/ScrollInsideScroll/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Durgadass/ScrollInsideScroll/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Durgadass/ScrollInsideScroll">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="scroll-inside-scroll" class="anchor" href="#scroll-inside-scroll"><span class="octicon octicon-link"></span></a>Scroll Inside Scroll</h1>
+
+<p>This project shows how to add a vertically scrollable view into another vertically scrollable view upto any level of depth.</p>
+
+<p>Placing vertically scrollable view into another vertically scrollable view is a bit tedious in android. Here we show how to place, withour sacrificing the recycling feature of various <code>AbsListView</code>s, <code>ScrollView</code> inside <code>ScrollView</code>, <code>ScrollView</code> inside <code>ListView</code>, <code>ListView</code> inside <code>GridView</code>, etc. And even <code>ListView</code> indide <code>ScrollView</code> which in turn inside another <code>ScrollView</code>, etc.</p>
+
+<p><b>Note</b>
+Eventhough you can nest scroll views to any level, please consider the user experiance. This project contains a complicated xml layout file <code>scroll_in_scroll.xml</code> which has no good user experiance.</p>
+
+<h4>
+<a name="step-1" class="anchor" href="#step-1"><span class="octicon octicon-link"></span></a>Step 1</h4>
+
+<p>Write a method which determines wheather a <code>View</code> can be scrolled vertically and place the method inside a common utility class as follows. This method is taken from <code>ViewPager.java</code> and modified to find whether a <code>View</code> can vertically scrollable.</p>
+
+<pre><code>public static boolean canScroll(View v, boolean checkV, int dy, int x, int y) {
+    if (v instanceof ViewGroup) {
+        final ViewGroup group = (ViewGroup) v;
+        final int scrollX = v.getScrollX();
+        final int scrollY = v.getScrollY();
+        final int count = group.getChildCount();
+        for (int i = count - 1; i &gt;= 0; i--) {
+            final View child = group.getChildAt(i);
+            if (x + scrollX &gt;= child.getLeft()
+                    &amp;&amp; x + scrollX &lt; child.getRight()
+                    &amp;&amp; y + scrollY &gt;= child.getTop()
+                    &amp;&amp; y + scrollY &lt; child.getBottom()
+                    &amp;&amp; canScroll(child, true, dy,
+                            x + scrollX - child.getLeft(), y + scrollY
+                                    - child.getTop())) {
+                return true;
+            }
+        }
+    }
+    return checkV &amp;&amp; ViewCompat.canScrollVertically(v, -dy);
+}
+</code></pre>
+
+<h4>
+<a name="step-2" class="anchor" href="#step-2"><span class="octicon octicon-link"></span></a>Step 2</h4>
+
+<p>Subclass the enclosing vertically scrollable view, it may be <code>ScrollView</code> or <code>ListView</code>, or the like and override the <code>onInterceptTouchEvent()</code> method as follows.</p>
+
+<pre><code>public boolean onInterceptTouchEvent(MotionEvent event) {
+  int action = event.getAction();
+    float x = event.getX();
+    float y = event.getY();
+    float dy = y - mLastMotionY;
+    switch (action) {
+    case MotionEvent.ACTION_DOWN:
+        mLastMotionY = y;
+        break;
+    case MotionEvent.ACTION_MOVE:
+        if (Util.canScroll(this, false, (int) dy, (int) x, (int) y)) {
+            mLastMotionY = y;
+            return false;
+        }
+        break;
+    }
+    return super.onInterceptTouchEvent(event);
+}
+</code></pre>
+
+<h4>
+<a name="step-3" class="anchor" href="#step-3"><span class="octicon octicon-link"></span></a>Step 3</h4>
+
+<p>Subclass the enclosed vertically scrollable view, it may be <code>GridView</code> or <code>ListView</code> or the like and override the <code>onMeasure()</code> method as follows. No need to override this method in <code>ScrollView</code>. Its default implementation behaves in the right way.</p>
+
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    int mode = MeasureSpec.getMode(widthMeasureSpec);
+    if (mode == MeasureSpec.UNSPECIFIED) {
+        int height = getLayoutParams().height;
+        if (height &gt; 0)
+            setMeasuredDimension(getMeasuredWidth(), height);
+    }
+}
+</code></pre>
+
+<h4>
+<a name="step-4" class="anchor" href="#step-4"><span class="octicon octicon-link"></span></a>Step 4</h4>
+
+<p>Finally create an xml layout file as given below and see how it works. We have to hard code the <code>layout_height</code> of <code>CustomListView</code>. If you create the view hierarchy programmatically, then set the height via <code>LayoutParams</code>. </p>
+
+<pre><code>&lt;com.dass.scroll_inside_scroll.CustomScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" &gt;
+    &lt;LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" &gt;
+
+        &lt;!-- Other Children --&gt;
+
+        &lt;com.dass.scroll_inside_scroll.CustomListView
+            android:layout_width="match_parent"
+            android:layout_height="300dp" &gt;
+        &lt;/com.dass.scroll_inside_scroll.CustomListView&gt;
+
+        &lt;!-- Other Children --&gt;
+
+    &lt;/LinearLayout&gt;
+&lt;/com.dass.scroll_inside_scroll.CustomScrollView&gt;
+</code></pre>
+
+<p>In this project the classes <code>CustomListView</code>, <code>CustomExpandableListView</code>, <code>CustomGridView</code> overrides the method <code>onInterceptTouchEvent()</code> in order to place other vertically scrollable views inside them. If we dont add vertically scrollable views inside any of these classes then no need to override <code>onInterceptTouchEvent()</code>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Durgadass">Durgadass</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
