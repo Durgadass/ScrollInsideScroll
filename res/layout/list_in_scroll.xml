@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.dass.scroll_inside_scroll.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/inner_scroll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/inner_textView1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#ff00ff00"
+            android:gravity="center"
+            android:text="Inside ScrollView" />
+
+        <com.dass.scroll_inside_scroll.CustomListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="400dp" >
+        </com.dass.scroll_inside_scroll.CustomListView>
+
+        <TextView
+            android:id="@+id/inner_textView2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#ff0000ff"
+            android:gravity="center"
+            android:text="Inside ScrollView" />
+    </LinearLayout>
+
+</com.dass.scroll_inside_scroll.CustomScrollView>
