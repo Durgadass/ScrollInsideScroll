@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
-import com.dass.messaging1.R;
+import com.dass.scroll_inside_scroll.R;
 
 public class MainActivity extends ActionBarActivity {
 

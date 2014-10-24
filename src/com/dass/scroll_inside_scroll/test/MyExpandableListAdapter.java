@@ -1,7 +1,5 @@
 package com.dass.scroll_inside_scroll.test;
 
-import com.dass.messaging1.R;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -12,6 +10,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.dass.scroll_inside_scroll.R;
 
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 	private Context context;
